@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bower — Support and Privacy</title>
+<style>
+  :root { color-scheme: light dark; --felt: #1e6b45; --ink: #1b2220; --muted: #5b6763; --bg: #f6f7f5; }
+  @media (prefers-color-scheme: dark) { :root { --ink: #e7ece9; --muted: #9aa7a2; --bg: #121615; } }
+  body { margin: 0; font: 17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); }
+  header { background: var(--felt); color: #fff; padding: 40px 20px; }
+  header h1 { margin: 0; font-size: 36px; }
+  header p { margin: 6px 0 0; opacity: .9; }
+  main { max-width: 720px; margin: 0 auto; padding: 24px 20px 64px; }
+  h2 { margin-top: 40px; }
+  dt { font-weight: 600; margin-top: 16px; }
+  dd { margin: 4px 0 0; color: var(--muted); }
+  a { color: var(--felt); }
+  footer { color: var(--muted); font-size: 14px; margin-top: 48px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Bower</h1>
+  <p>Euchre that plays fair. Pay once, no ads, no account.</p>
+</header>
+<main>
+  <h2 id="support">Support</h2>
+  <p>Questions, bugs, or a rule your table plays that Bower doesn't? Email
+    <a href="mailto:frijolitolabs@gmail.com">frijolitolabs@gmail.com</a>. Include the app version from
+    Settings → Help and, for a rules question, the hand review's seed if you have it. Replies usually
+    within two days.</p>
+
+  <h2 id="faq">Common questions</h2>
+  <dl>
+    <dt>Does the AI see my cards?</dt>
+    <dd>No. The AI is a separate module that only receives what a player in its seat would know: its own hand,
+      the up card, bids, and cards played. Difficulty changes how much it searches, never what it can see.</dd>
+    <dt>How do I know the deal wasn't changed mid-hand?</dt>
+    <dd>Each hand's deck comes from a random seed. Before the deal, the app shows a SHA-256 commitment of
+      that seed; after the hand, it reveals the seed. The review screen re-derives the deal and shows a check
+      mark if it matches, and the derivation is documented so anyone can verify it independently.</dd>
+    <dt>What does Pro add?</dt>
+    <dd>Spades (nil, bags and a partner that bids sensibly), expert opponents, table themes and card backs, and stats
+      export. It's a one-time purchase. The free euchre game is complete: every rule, every stat, verifiable deals, and no ads.</dd>
+    <dt>I bought Pro on another device.</dt>
+    <dd>Settings → Pro → Restore purchase. Pro is tied to your Apple Account and supports Family Sharing.</dd>
+    <dt>Which rules are supported?</dt>
+    <dd>Standard North American euchre with options for stick the dealer, Canadian loner, defend alone, and
+      games to 5, 7, 10, 11 or 15.</dd>
+  </dl>
+
+  <h2 id="privacy">Privacy policy</h2>
+  <p><strong>Bower collects no data.</strong> There is no account, no analytics, no advertising, and no
+    third-party SDK.</p>
+  <ul>
+    <li>Your games, settings and fairness statistics are stored only on your device. They leave it only if
+      you export them yourself (for example, sharing the stats CSV).</li>
+    <li>The Pro purchase is handled entirely by Apple's App Store. Bower receives only confirmation that the
+      purchase exists; it never sees payment details.</li>
+    <li>Bower makes no network requests of its own.</li>
+    <li>If you email support, your message is used only to answer you.</li>
+  </ul>
+  <p>Changes to this policy will be posted on this page with the date below.</p>
+
+  <footer>Last updated 30 October 2026.</footer>
+</main>
+</body>
+</html>
