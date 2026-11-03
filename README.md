@@ -7,7 +7,7 @@ Support email: frijolitolabs@gmail.com (also set in each app's `ios/project.yml`
 |---|---|---|
 | Lotería Mexicana: Cantor | https://frijolitolabs.github.io/loteria/ | https://frijolitolabs.github.io/loteria/#privacy |
 | Anytrack | https://frijolitolabs.github.io/anytrack/ | https://frijolitolabs.github.io/anytrack/#privacy |
-| Bower | https://frijolitolabs.github.io/bower/ | https://frijolitolabs.github.io/bower/#privacy |
+| Loner | https://frijolitolabs.github.io/loner/ | https://frijolitolabs.github.io/loner/#privacy |
 
 ## Publish (first time)
 1. Signed in to GitHub as `frijolitolabs`, create a **public** repository named exactly `frijolitolabs.github.io`
