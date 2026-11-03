@@ -35,19 +35,24 @@
   <dl>
     <dt>Does the AI see my cards?</dt>
     <dd>No. The AI is a separate module that only receives what a player in its seat would know: its own hand,
-      the up card, bids, and cards played. Difficulty changes how much it searches, never what it can see.</dd>
+      the up card, bids, cards played and, in Hearts, the cards it passed and received. Difficulty changes how much it searches, never what it can see.</dd>
     <dt>How do I know the deal wasn't changed mid-hand?</dt>
     <dd>Each hand's deck comes from a random seed. Before the deal, the app shows a SHA-256 commitment of
       that seed; after the hand, it reveals the seed. The review screen re-derives the deal and shows a check
       mark if it matches, and the derivation is documented so anyone can verify it independently.</dd>
     <dt>What does Pro add?</dt>
-    <dd>Spades (nil, bags and a partner that bids sensibly), expert opponents, table themes and card backs, and stats
-      export. It's a one-time purchase. The free euchre game is complete: every rule, every stat, verifiable deals, and no ads.</dd>
+    <dd>Spades (nil, bags and a partner that bids sensibly), Hearts (passing, the queen of spades and shooting
+      the moon), expert opponents, table themes and card backs, and stats export. It's a one-time purchase. The free euchre game is complete: every rule, every stat, verifiable deals, and no ads.</dd>
     <dt>I bought Pro on another device.</dt>
     <dd>Settings → Pro → Restore purchase. Pro is tied to your Apple Account and supports Family Sharing.</dd>
     <dt>Which rules are supported?</dt>
-    <dd>Standard North American euchre with options for stick the dealer, Canadian loner, defend alone, and
-      games to 5, 7, 10, 11 or 15.</dd>
+    <dd>Euchre: standard North American rules with options for stick the dealer, Canadian loner, defend alone,
+      and games to 5, 7, 10, 11 or 15.<br>
+      Spades: games to 200, 250, 300 or 500, with options for nil, the bag penalty, breaking spades, and whether a
+      failed nil's tricks help the partner.<br>
+      Hearts: pass left, right, across, then hold (or no passing); no points on the first trick; hearts must be
+      broken (optionally by the queen of spades); shooting the moon adds 26 to everyone else or takes 26 from the
+      shooter; games to 50, 75 or 100.</dd>
   </dl>
 
   <h2 id="privacy">Privacy policy</h2>
