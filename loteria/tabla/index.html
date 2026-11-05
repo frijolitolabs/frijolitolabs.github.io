@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Your Lotería board · Tu tabla de lotería</title>
+<meta property="og:title" content="Your Lotería board · Tu tabla de lotería">
+<meta property="og:description" content="Tap to open your board in Lotería Mexicana: Cantor. · Toca para abrir tu tabla en la app.">
+<meta property="og:site_name" content="Frijolito Labs">
+<!--
+  Board links sent from the app in a message: https://frijolitolabs.github.io/loteria/tabla/#CODE/N?d=deck&c=ids&p=patterns
+  Messages won't make a cantor:// link tappable, so the app sends this page instead. Everything after # stays in
+  the browser (it is never sent to the server); this page only turns it back into cantor://tabla/CODE/N?... for the app.
+-->
+<style>
+  :root { --bg: #f8f1e4; --ink: #2b2118; --muted: #6e6257; --rosa: #c2335f; --card: #fffaf1; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #1d1714; --ink: #f4ebe0; --muted: #b5a899; --rosa: #f0789c; --card: #2a221d; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  .flags { height: 18px; background: repeating-linear-gradient(90deg, #D3436E 0 28px, #F2A541 28px 56px, #2A7F7A 56px 84px, #6B3E75 84px 112px, #3A9D5D 112px 140px); clip-path: polygon(0 0, 100% 0, 100% 100%, 0 60%); }
+  main { max-width: 440px; margin: 0 auto; padding: 32px 16px 48px; text-align: center; }
+  h1 { color: var(--rosa); font-size: 34px; margin: 8px 0 2px; }
+  .set { color: var(--muted); font: 15px ui-monospace, Menlo, monospace; margin: 0 0 28px; }
+  .open { display: block; background: var(--rosa); color: #fff; text-decoration: none; font-weight: 700; font-size: 20px;
+          padding: 16px; border-radius: 14px; box-shadow: 0 4px 0 rgba(0,0,0,.18); }
+  .open:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,.18); }
+  .box { background: var(--card); border-radius: 14px; padding: 16px; margin-top: 28px; text-align: left; }
+  .box p { margin: 0 0 10px; } .box p:last-child { margin: 0; }
+  a { color: var(--rosa); }
+  .muted { color: var(--muted); font-size: 15px; }
+  .bad { display: none; }
+  body.invalid .good { display: none; } body.invalid .bad { display: block; }
+</style>
+</head>
+<body>
+<div class="flags"></div>
+<main>
+  <div class="good">
+    <h1 id="title">Your board</h1>
+    <p class="set" id="set"></p>
+    <a class="open" id="open" href="#">Open my board in Lotería</a>
+    <div class="box">
+      <p id="noapp"><b>Don’t have the app?</b> Get <a id="store" href="https://apps.apple.com/app/id6829811257">Lotería Mexicana: Cantor</a> free on the App Store, then come back to this message and tap the link again.</p>
+      <p class="muted" id="note">No account needed. Your board stays on your phone.</p>
+    </div>
+  </div>
+  <div class="bad">
+    <h1 id="badtitle">That link isn’t complete</h1>
+    <p id="badtext">Ask the caller to send your board again, or scan the QR code on their phone from the app’s My board tab.</p>
+  </div>
+</main>
+<script>
+(function () {
+  var es = /^es\b/i.test(navigator.language || "");
+  var t = es ? {
+    lang: "es", title: "Tu tabla", board: "Tabla ", set: "Juego ", open: "Abrir mi tabla en Lotería",
+    noapp: "<b>¿No tienes la app?</b> Descarga <a href=\"https://apps.apple.com/app/id6829811257\">Lotería Mexicana: Cantor</a> gratis en el App Store, luego regresa a este mensaje y toca el enlace otra vez.",
+    note: "Sin cuenta. Tu tabla se queda en tu celular.",
+    badtitle: "Ese enlace está incompleto",
+    badtext: "Pide al cantor que te mande tu tabla otra vez, o escanea el código QR de su teléfono desde la pestaña Mi tabla de la app."
+  } : { board: "Board ", set: "Set " };
+  function set(id, html) { var e = document.getElementById(id); if (e && html) e.innerHTML = html; }
+  if (es) {
+    document.documentElement.lang = "es";
+    ["title", "open", "noapp", "note", "badtitle", "badtext"].forEach(function (k) { set(k, t[k]); });
+  }
+  // #CODE/N?d=...&c=...&p=...  (same rules as the app's TablaLink: Crockford code, board number ≥ 1)
+  var m = /^#([0-9A-HJKMNP-TV-Z]{6})\/([1-9][0-9]{0,5})\?(.+)$/i.exec(location.hash);
+  if (!m || !/(^|&)d=[a-z0-9-]+(&|$)/i.test(m[3]) || !/(^|&)c=[0-9.]+(&|$)/.test(m[3])) {
+    document.body.className = "invalid";
+    return;
+  }
+  var app = "cantor://tabla/" + m[1].toUpperCase() + "/" + m[2] + "?" + m[3];
+  document.getElementById("open").href = app;
+  set("title", t.board + m[2]);
+  document.getElementById("set").textContent = t.set + m[1].toUpperCase();
+  document.title = t.board + m[2] + " · Lotería";
+})();
+</script>
+</body>
+</html>
