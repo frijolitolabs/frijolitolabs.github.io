@@ -12,6 +12,7 @@
   Board links sent from the app in a message: https://frijolitolabs.github.io/loteria/tabla/#CODE/N?d=deck&c=ids&p=patterns
   Messages won't make a cantor:// link tappable, so the app sends this page instead. Everything after # stays in
   the browser (it is never sent to the server); this page only turns it back into cantor://tabla/CODE/N?... for the app.
+  The QR code uses ?b=CODE/N&d=...&c=...&p=... instead, because the iPhone Camera drops the # part when it opens the app.
 -->
 <style>
   :root { --bg: #f8f1e4; --ink: #2b2118; --muted: #6e6257; --rosa: #c2335f; --card: #fffaf1; }
@@ -66,7 +67,10 @@
     ["title", "open", "noapp", "note", "badtitle", "badtext"].forEach(function (k) { set(k, t[k]); });
   }
   // #CODE/N?d=...&c=...&p=...  (same rules as the app's TablaLink: Crockford code, board number ≥ 1)
-  var m = /^#([0-9A-HJKMNP-TV-Z]{6})\/([1-9][0-9]{0,5})\?(.+)$/i.exec(location.hash);
+  var h = location.hash;
+  var qb = /[?&]b=([^&]+)/.exec(location.search);
+  if (!h && qb) h = "#" + decodeURIComponent(qb[1]) + "?" + location.search.slice(1).split("&").filter(function (p) { return p.indexOf("b=") !== 0; }).join("&");
+  var m = /^#([0-9A-HJKMNP-TV-Z]{6})\/([1-9][0-9]{0,5})\?(.+)$/i.exec(h);
   if (!m || !/(^|&)d=[a-z0-9-]+(&|$)/i.test(m[3]) || !/(^|&)c=[0-9.]+(&|$)/.test(m[3])) {
     document.body.className = "invalid";
     return;
