@@ -1,0 +1,12 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["47M8ZAPJBP.com.joshuaparshall.cantor"],
+        "components": [
+          { "/": "/loteria/tabla/*", "comment": "Lotería: a board handed to a player's phone" }
+        ]
+      }
+    ]
+  }
+}
