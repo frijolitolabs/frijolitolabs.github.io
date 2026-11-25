@@ -18,6 +18,7 @@
   a { color: var(--brand); }
   .es { border-top: 1px solid color-mix(in srgb, var(--muted) 30%, transparent); margin-top: 48px; padding-top: 8px; }
   footer { color: var(--muted); font-size: 14px; margin-top: 48px; }
+  pre { background: color-mix(in srgb, var(--muted) 12%, transparent); padding: 12px; border-radius: 8px; overflow-x: auto; font-size: 14px; line-height: 1.45; }
 </style>
 </head>
 <body>
@@ -54,6 +55,34 @@
     <dd>Open it again: the game is saved and picks up where it was.</dd>
   </dl>
 
+  <h2 id="verify">How to check the deal</h2>
+  <p>Before each round, the app picks a random 32-byte seed and shows the start of its fingerprint (the SHA-256 of the
+    seed). The whole deal and the order of the boneyard come from that seed, so nothing can change once the fingerprint
+    is on screen. When the round ends, the app shows the whole seed and fingerprint. Tap Copy, then:</p>
+  <ol>
+    <li>Check that SHA-256 of the seed equals the fingerprint.</li>
+    <li>Start from the double-twelve set in order 0-0, 0-1, … 0-12, 1-1, … 12-12 and shuffle it (Fisher–Yates): for
+      <em>i</em> from 90 down to 1, take the first 8 bytes of SHA-256(seed followed by <em>i</em> as 4 big-endian bytes) as a
+      number <em>r</em>, and swap tiles <em>i</em> and <em>r</em> mod (<em>i</em> + 1).</li>
+    <li>Remove the round's engine double. Each player in seat order gets the next 15 tiles (12 with 5–6 players, 10 with
+      7–8); the rest is the boneyard, drawn from the front.</li>
+  </ol>
+  <pre><code>import hashlib
+seed = bytes.fromhex("PASTE THE SEED HERE")
+print(hashlib.sha256(seed).hexdigest())  # must match the fingerprint
+tiles = [(a, b) for a in range(13) for b in range(a, 13)]  # 0-0, 0-1, ... 12-12
+for i in range(len(tiles) - 1, 0, -1):
+    h = hashlib.sha256(seed + i.to_bytes(4, "big")).digest()
+    j = int.from_bytes(h[:8], "big") % (i + 1)
+    tiles[i], tiles[j] = tiles[j], tiles[i]
+engine = 12   # this round's engine double (12, 11, ... 0)
+players = 4
+n = 15 if players <= 4 else 12 if players <= 6 else 10
+deck = [t for t in tiles if t != (engine, engine)]
+for s in range(players):
+    print("Player", s + 1, sorted(deck[s * n:(s + 1) * n]))
+print("Boneyard, drawn from the front:", deck[players * n:])</code></pre>
+
   <h2 id="privacy">Privacy policy</h2>
   <p><strong>Mexican Train collects no data.</strong> There is no account, no analytics, no advertising, and no
     third-party SDK.</p>
@@ -83,6 +112,16 @@
       <dd>El juego completo es gratis hasta para 4 jugadores. Mexican Train Pro, un solo pago, agrega hasta 8 jugadores
         y reglas de la casa. Sin suscripción, sin anuncios.</dd>
     </dl>
+    <h2 id="verificar">Cómo verificar el reparto</h2>
+    <p>Antes de cada ronda, la app elige una semilla aleatoria de 32 bytes y muestra el inicio de su huella (el SHA-256
+      de la semilla). Todo el reparto y el orden del pozo salen de esa semilla. Al terminar la ronda, la app muestra la
+      semilla y la huella completas. Toca Copiar y luego: revisa que el SHA-256 de la semilla sea la huella; baraja el
+      juego doble doce en orden 0-0, 0-1, … 12-12 con Fisher–Yates (para <em>i</em> de 90 a 1, los primeros 8 bytes de
+      SHA-256(semilla seguida de <em>i</em> en 4 bytes big-endian) como número <em>r</em>; intercambia <em>i</em> y
+      <em>r</em> mod (<em>i</em> + 1)); quita la mula de salida y reparte en orden de asientos 15 fichas (12 con 5–6
+      jugadores, 10 con 7–8). El resto es el pozo, que se toma desde el principio. El programa de arriba (Python) lo hace
+      por ti.</p>
+
     <h2 id="privacidad">Aviso de privacidad</h2>
     <p><strong>Mexican Train no recopila ningún dato.</strong> No hay cuenta, analítica, publicidad ni SDK de terceros.
       Los nombres, tus ajustes y el juego en curso se guardan solo en tu dispositivo. La compra la maneja Apple; la
