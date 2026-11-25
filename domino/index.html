@@ -16,6 +16,7 @@
   dt { font-weight: 600; margin-top: 16px; }
   dd { margin: 4px 0 0; color: var(--muted); }
   a { color: var(--brand); }
+  pre { background: color-mix(in srgb, var(--muted) 12%, transparent); padding: 12px; border-radius: 8px; overflow-x: auto; font-size: 14px; line-height: 1.45; }
   .es { border-top: 1px solid color-mix(in srgb, var(--muted) 30%, transparent); margin-top: 48px; padding-top: 8px; }
   footer { color: var(--muted); font-size: 14px; margin-top: 48px; }
 </style>
@@ -45,15 +46,41 @@
     <dd>Sign in to Game Center in the Settings app, then tap "Play with family" and invite them. Each person plays on
       their own phone and takes turns at their own pace.</dd>
     <dt>How do I know the deal is fair?</dt>
-    <dd>Every hand is shuffled on your phone from a random seed, and the deal's fingerprint is shown at the end of the
-      hand so it can be checked.</dd>
+    <dd>Every hand is dealt from a random seed whose fingerprint is shown during play; the seed itself is shown when
+      the hand ends, so anyone can check the deal. See <a href="#verify">How to check the deal</a>.</dd>
   </dl>
+
+  <h2 id="verify">How to check the deal</h2>
+  <p>Before each hand, the app picks a random 32-byte seed and shows the start of its fingerprint (the SHA-256 of the
+    seed) at the top of the table. Every player's seven tiles come from that seed, so nothing can change once the
+    fingerprint is on screen. When the hand ends, the app shows the whole seed and fingerprint. Tap Copy, then:</p>
+  <ol>
+    <li>Check that SHA-256 of the seed equals the fingerprint.</li>
+    <li>Start from the double-six set in order 0-0, 0-1, … 0-6, 1-1, … 6-6 (28 tiles) and shuffle it (Fisher–Yates):
+      for <em>i</em> from 27 down to 1, take the first 8 bytes of SHA-256(seed followed by <em>i</em> as 4 big-endian
+      bytes) as a number <em>r</em>, and swap tiles <em>i</em> and <em>r</em> mod (<em>i</em> + 1).</li>
+    <li>Deal in seat order, seven tiles each: the first seat gets tiles 0–6 of the shuffled set, the next seat 7–13,
+      then 14–20 and 21–27. Nothing is left over. Against the computer the seats are you, Rosa, Beto and Memo, in
+      playing order (Beto is your partner). In the first hand of a game the 6-6 leads.</li>
+  </ol>
+  <pre><code>import hashlib
+seed = bytes.fromhex("PASTE THE SEED HERE")
+print(hashlib.sha256(seed).hexdigest())  # must match the fingerprint
+tiles = [(a, b) for a in range(7) for b in range(a, 7)]  # 0-0, 0-1, ... 0-6, 1-1, ... 6-6
+for i in range(len(tiles) - 1, 0, -1):
+    h = hashlib.sha256(seed + i.to_bytes(4, "big")).digest()
+    j = int.from_bytes(h[:8], "big") % (i + 1)
+    tiles[i], tiles[j] = tiles[j], tiles[i]
+names = ["You", "Rosa", "Beto", "Memo"]  # seats in playing order, against the computer
+for s in range(4):
+    print(names[s], sorted(tiles[s * 7:(s + 1) * 7]))</code></pre>
 
   <h2 id="privacy">Privacy policy</h2>
   <p><strong>Dominó en Familia collects no data.</strong> There is no account, no analytics, no advertising, and no
     third-party SDK.</p>
   <ul>
-    <li>Your settings (rules, game speed, computer level) are stored only on your device.</li>
+    <li>Your settings (rules, game speed, computer level) and a game in progress against the computer are stored only
+      on your device.</li>
     <li>Online games use Apple's Game Center. Your Game Center name and the moves of a shared game go through Apple
       under <a href="https://www.apple.com/legal/privacy/">Apple's privacy policy</a>; the app's developer never
       receives them.</li>
@@ -75,14 +102,29 @@
       <dt>¿Cómo juego en línea con la familia?</dt>
       <dd>Inicia sesión en Game Center en la app Ajustes, toca "Jugar con la familia" e invítalos. Cada quien juega en
         su teléfono, a su ritmo.</dd>
+      <dt>¿Cómo sé que el reparto es justo?</dt>
+      <dd>Cada mano sale de una semilla aleatoria cuya huella se ve durante el juego; al terminar la mano se muestra la
+        semilla, para que cualquiera pueda comprobar el reparto. Mira <a href="#verificar">Cómo verificar el
+        reparto</a>.</dd>
     </dl>
+    <h2 id="verificar">Cómo verificar el reparto</h2>
+    <p>Antes de cada mano, la app elige una semilla aleatoria de 32 bytes y muestra arriba de la mesa el inicio de su
+      huella (el SHA-256 de la semilla). Las siete fichas de cada jugador salen de esa semilla. Al terminar la mano, la
+      app muestra la semilla y la huella completas. Toca Copiar y luego: revisa que el SHA-256 de la semilla sea la
+      huella; baraja el juego doble seis en orden 0-0, 0-1, … 0-6, 1-1, … 6-6 (28 fichas) con Fisher–Yates (para
+      <em>i</em> de 27 a 1, los primeros 8 bytes de SHA-256(semilla seguida de <em>i</em> en 4 bytes big-endian) como
+      número <em>r</em>; intercambia <em>i</em> y <em>r</em> mod (<em>i</em> + 1)); reparte en orden de asientos siete
+      fichas a cada quien: el primer asiento recibe las fichas 0–6 de la baraja, el siguiente 7–13, luego 14–20 y
+      21–27. No sobra ninguna. Contra la computadora los asientos son tú, Rosa, Beto y Memo, en orden de juego (Beto
+      es tu pareja). En la primera mano de la partida sale la mula de seis. El programa de arriba (Python) lo hace por
+      ti.</p>
     <h2 id="privacidad">Aviso de privacidad</h2>
     <p><strong>Dominó en Familia no recopila ningún dato.</strong> No hay cuenta, analítica, publicidad ni SDK de
-      terceros. Tus ajustes se guardan solo en tu dispositivo. Las partidas en línea pasan por Game Center de Apple;
+      terceros. Tus ajustes y la partida en curso contra la computadora se guardan solo en tu dispositivo. Las partidas en línea pasan por Game Center de Apple;
       la app no hace conexiones a internet propias.</p>
   </section>
 
-  <footer>Last updated 23 November 2026 · Actualizado el 23 de noviembre de 2026.</footer>
+  <footer>Last updated 24 November 2026 · Actualizado el 24 de noviembre de 2026.</footer>
 </main>
 </body>
 </html>
